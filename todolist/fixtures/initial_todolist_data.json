@@ -1,0 +1,32 @@
+[
+    {
+        "model": "todolist.itemtodolist",
+        "pk": 1,
+        "fields": {
+            "user": "1",
+            "date": "2022-09-20",
+            "title": "Study for quiz",
+            "description": "Operating System quiz. Refer to slides."
+        }
+     },
+     {
+        "model": "todolist.itemtodolist",
+        "pk": 2,
+        "fields": {
+            "user": "2",
+            "date": "2022-09-21",
+            "title": "Database HW",
+            "description": "Creating EER Model. PDF in SCeLe."
+        }
+    },
+    {
+        "model": "todolist.itemtodolist",
+        "pk": 3,
+        "fields": {
+            "user": "3",
+            "date": "2022-09-22",
+            "title": "Student Executive Board Meeting",
+            "description": "Weekly meeting: assigning tasks, weekly report."
+        }
+    }
+]
