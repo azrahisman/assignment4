@@ -4,6 +4,8 @@
 <h5>Name: </h5>
 <p>Azra Batrisyia Hisman</p>
 
+<button><a href="{% url 'todolist:create_task' %}">Create Task</a></button>
+
 <table>
     <tr>
         <th>User</th>
@@ -22,5 +24,7 @@
         </tr>
 {% endfor %}
 </table>
+<h5>Last Login: {{ last_login }}</h5>
+<button><a href="{% url 'todolist:logout' %}">Logout</a></button>
 
 {% endblock content %}
