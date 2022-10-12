@@ -2,21 +2,18 @@ import datetime
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from todolist.models import Task
-from django.shortcuts import redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
-from django.contrib.auth import logout
-from .forms import TaskForm
+from django.contrib.auth import authenticate, login, logout
 
 # Create your views here.
 @login_required(login_url='/todolist/login/')
 def show_todolist(request):
-    data_todolist_item = Task.objects.all()
+    data_todolist_item = Task.objects.filter(user=request.user)
     context = {
-        'username': request.COOKIES['username'],
+        'username': request.user,
         'todolist': data_todolist_item,
         'last_login': request.COOKIES['last_login'],
     }
@@ -51,20 +48,21 @@ def login_user(request):
     context = {}
     return render(request, 'login.html', context)
 
-@login_required(login_url='/wishlist/login/')
+@login_required(login_url='/todolist/login/')
 def logout_user(request):
     logout(request)
     response = HttpResponseRedirect(reverse('todolist:login'))
     response.delete_cookie('last_login')
     return response
 
-@login_required(login_url='/wishlist/login/')
+@login_required(login_url='/todolist/login/')
 def create_task(request):
     if request.method == 'POST':
         title = request.POST.get("title")
         description = request.POST.get("description")
-        date = datetime.date.today()
-        Task.objects.create(user=request.user, date=date, title=title, description=description)
-        return redirect('todolist:show_todolist')
-    context = {}
+        date = str(datetime.date.today())
+        t = Task.objects.create(user=request.user, date=date, title=title, description=description)
+        t.save()
+        return HttpResponseRedirect(reverse("todolist:show_todolist"))
+    context = {"username": request.user}
     return render(request, 'create_task.html', context)
