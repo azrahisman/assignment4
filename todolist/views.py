@@ -1,6 +1,8 @@
 import datetime
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.http import HttpResponse
+from django.core import serializers
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from todolist.models import Task
@@ -66,3 +68,18 @@ def create_task(request):
         return HttpResponseRedirect(reverse("todolist:show_todolist"))
     context = {"username": request.user}
     return render(request, 'create_task.html', context)
+
+@login_required(login_url='/todolist/login/')
+def show_json(request):
+    data = Task.objects.filter(user=request.user)
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+
+@login_required(login_url='/todolist/login/')
+def todolist_ajax(request):
+    data_todolist_item = Task.objects.filter(user=request.user)
+    context = {
+        'username': request.user,
+        'todolist': data_todolist_item,
+        'last_login': request.COOKIES['last_login'],
+    }
+    return render(request, "wishlist_ajax.html", context)

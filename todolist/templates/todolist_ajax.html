@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h5>Name: </h5>
+<b>{{ username }}</b>
+
+<script>
+    async function showTodolist() {
+      return fetch("{% url 'show_json' %}").then((res) => res.json())
+    }
+  
+    async function refreshWishlist() {
+          document.getElementById("table").innerHTML = ""
+          const todolist = await showTodolist()
+          let htmlString = `<tr>
+            <th>User</th>
+            <th>Date</th>
+            <th>Title</th>
+            <th>Description</th>
+          </tr>`
+          todolist.forEach((item) => {
+            htmlString += `\n<tr>
+            <th>${item.fields.user}</th>
+            <th>${item.fields.date}</th>
+            <th>${item.fields.title}</th>
+            <th>${item.fields.description}</th>
+          </tr>` 
+          })
+          
+          document.getElementById("table").innerHTML = htmlString
+    }
+  
+    function createTask() {
+      fetch("{% url 'create_task' %}", {
+            method: "POST",
+            body: new FormData(document.querySelector('#form'))
+        }).then(refreshTodolist)
+      return false
+    }
+  
+    document.getElementById("button").onclick = createTask
+    refreshTodolist()
+</script>
+
+{% endblock content %}
